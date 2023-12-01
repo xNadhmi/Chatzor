@@ -1,18 +1,314 @@
-/* public/styles/style.css */
-body {
-  font-family: Arial, sans-serif;
+/* COLOR PALETTE */
+:root {
+  font-size: 20px;
+  font-family: "Arial", sans-serif;
+}
+
+.DEBUG * {
+  outline: 1px solid #ff00ff !important;
+  background: rgba(255, 0, 255, 0.05);
+}
+
+* {
   margin: 0;
   padding: 0;
-  background-color: red;
+  font: inherit;
+  box-sizing: border-box;
+  color: inherit;
+}
+
+*::before, *::after {
+  box-sizing: border-box;
 }
 
 h1 {
-  text-align: center;
-  padding: 20px;
-  background-color: #333;
-  color: #fff;
+  font-size: 2em;
+  font-weight: 700;
 }
 
-/* Add more styling as needed */
+h2 {
+  font-size: 1.8em;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+h5 {
+  font-size: 1em;
+  font-weight: 600;
+}
+
+h6 {
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+html {
+  color-scheme: dark light;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 1rem;
+  font-size: 100%;
+  color: #EEEEEE;
+  background-color: #222222;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+}
+main .logo {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  width: 5rem;
+  aspect-ratio: 1;
+}
+main .logo img {
+  width: 100%;
+  object-fit: contain;
+}
+main form {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  width: 25rem;
+  padding: 1rem;
+  background-color: rgba(238, 238, 238, 0.1);
+  border-radius: 0.5rem;
+}
+main form input {
+  width: 100%;
+  text-align: center;
+}
+
+chat {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  width: 90%;
+  height: 100%;
+}
+chat aside {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  height: 100%;
+  min-width: 25rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: rgba(238, 238, 238, 0.1);
+}
+chat aside .search {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+chat aside .search input {
+  width: 100%;
+  height: 2rem;
+}
+chat aside .users {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+chat aside .users .user {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background-color: rgba(238, 238, 238, 0.05);
+}
+chat aside .users .user .avatar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0;
+  width: 3rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+chat aside .users .user .avatar img {
+  width: 100%;
+  object-fit: contain;
+}
+chat chat-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: rgba(238, 238, 238, 0.1);
+}
+chat chat-wrapper .info {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+chat chat-wrapper .info .user {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+chat chat-wrapper .info .user .avatar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0;
+  width: 3rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+chat chat-wrapper .info .user .avatar img {
+  width: 100%;
+  object-fit: contain;
+}
+chat chat-wrapper chat-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  height: 100%;
+}
+chat chat-wrapper chat-content chat-message {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5rem;
+  width: 90%;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: rgba(238, 238, 238, 0.1);
+}
+chat chat-wrapper chat-content chat-message::after {
+  content: attr(sender-username);
+  position: absolute;
+  bottom: 0;
+  padding: 0 0.25rem;
+  translate: 0 100%;
+  font-size: 0.75rem;
+  opacity: 0.6;
+  font-weight: 300;
+  font-style: italic;
+}
+chat chat-wrapper chat-content chat-message[sent=false] {
+  border-bottom-left-radius: 0;
+  margin-right: auto;
+}
+chat chat-wrapper chat-content chat-message[sent=false]::after {
+  left: 0;
+}
+chat chat-wrapper chat-content chat-message[sent=true] {
+  background-color: rgba(0, 167, 179, 0.5);
+  margin-left: auto;
+  border-bottom-right-radius: 0;
+}
+chat chat-wrapper chat-content chat-message[sent=true]::after {
+  right: 0;
+}
+chat chat-wrapper chat-send {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem;
+}
+chat chat-wrapper chat-send input {
+  width: 100%;
+}
+
+input {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  height: 2.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  border: none;
+  background-color: transparent;
+  outline: 2px solid rgba(238, 238, 238, 0.2);
+}
+
+button {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem;
+  border: none;
+  background-color: transparent;
+  outline: 2px solid rgba(238, 238, 238, 0.2);
+}
+button:hover {
+  background-color: rgba(238, 238, 238, 0.05);
+}
 
 /*# sourceMappingURL=main.css.map */

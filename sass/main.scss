@@ -1,16 +1,99 @@
-/* public/styles/style.css */
+
+/* COLOR PALETTE */
+$color-white:				#EEEEEE;
+$color-black:				#222222;
+$color-blue:				#00a7b3;
+
+:root {
+	font-size: 20px;
+	font-family: "Arial", sans-serif;
+}
+
+@mixin display-flex($direction: row, $justfiy: flex-start, $align: flex-start, $gap: 1rem) {
+	display: flex;
+	flex-direction: $direction;
+	justify-content: $justfiy;
+	align-items: $align;
+	gap: $gap;
+}
+
+
+.DEBUG * {
+	outline: 1px solid #ff00ff !important;
+	background: rgba(255,0,255,0.05);
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	font: inherit;
+	box-sizing: border-box;
+	color: inherit;
+}
+*::before, *::after {box-sizing: border-box;}
+
+h1	{font-size: 2.0em;	font-weight: 700;}
+h2	{font-size: 1.8em;	font-weight: 700;}
+h3	{font-size: 1.5em;	font-weight: 600;}
+h4	{font-size: 1.2em;	font-weight: 600;}
+h5	{font-size: 1.0em;	font-weight: 600;}
+h6	{font-size: 0.8em;	font-weight: 600;}
+
+html {
+	color-scheme: dark light;
+	width: 100%;
+	height: 100%;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: red;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 1rem;
+	font-size: 100%;
+	color: $color-white;
+	background-color: $color-black;
 }
 
-h1 {
-  text-align: center;
-  padding: 20px;
-  background-color: #333;
-  color: #fff;
+main {
+	@include display-flex(column, flex-start, center, 1rem);
+	
+	width: 100%;
+	height: 100%;
+	padding: 1rem;
+
+	.logo {
+		@include display-flex(row, center, center);
+		width: 5rem;
+		aspect-ratio: 1;
+
+		img {
+			width: 100%;
+			object-fit: contain;
+		}
+	}
+
+	form {
+		@include display-flex(column, flex-start, center, 1rem);
+		
+		width: 25rem;
+		padding: 1rem;
+		background-color: rgba($color-white, 0.1);
+		border-radius: 0.5rem;
+
+		input {
+			width: 100%;
+			text-align: center;
+		}
+	}
 }
 
-/* Add more styling as needed */
+
+
+
+
+@import "_chat.scss", "_inputs.scss", "_buttons.scss";

@@ -7,8 +7,43 @@
   <title>Your Chat App</title>
 </head>
 <body>
-  <h1>Welcome to Your Chat App</h1>
-  <!-- Your chat UI goes here -->
+	<main>
+		<chat>
+			<aside>
+				<div class="search">
+					<input type="text" placeholder="Find a chat buddy">
+				</div>
+				<div class="users">
+					<div class="user">
+						<div class="avatar"><img src="/assets/logo/logo.svg" alt=""></div>
+						<div class="username">Arouna</div>
+					</div>
+					<div class="user">
+						<div class="avatar"><img src="/assets/logo/logo.svg" alt=""></div>
+						<div class="username">Arouna</div>
+					</div>
+				</div>
+			</aside>
+	
+			<chat-wrapper>
+				<div class="info">
+					<div class="user">
+						<div class="avatar"><img src="/assets/logo/logo.svg" alt=""></div>
+						<div class="username">Arouna</div>
+					</div>
+					<div class="settings">settings</div>
+				</div>
+				<chat-content>
+					<chat-message sender-username="Arouna" sent="false">Hey</chat-message>
+					<chat-message sender-username="Me" sent="true">Hello</chat-message>
+				</chat-content>
+				<chat-send>
+					<input type="text" placeholder="Message">
+					<button>send</button>
+				</chat-send>
+			</chat-wrapper>
+		</chat>
+	</main>
   <script src="/js/main.js"></script>
 </body>
 </html>
