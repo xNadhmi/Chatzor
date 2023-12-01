@@ -32,16 +32,16 @@ function dbConnect() {
 
 	connection.connect((err) => {
 		if (err) {
-			console.error("Error connecting to MySQL:", err);
+			console.error("[MYSQL] Error connecting:", err);
 		} else {
-			console.log("Connected to MySQL database");
+			console.log("[MYSQL]: Connected to database");
 		}
 	});
 	
-	connection.on('error', function(err) {
-		console.log('db error', err);
-		if(err.code === 'PROTOCOL_CONNECTION_LOST') {
-			console.log("[MYSQL]: Attemption reconnection");
+	connection.on("error", function(err) {
+		console.log("db error", err);
+		if(err.code === "PROTOCOL_CONNECTION_LOST") {
+			console.log("[MYSQL]: Attempting reconnection");
 			dbConnect();
 		} else {
 			throw err;
@@ -66,8 +66,21 @@ const requireLogin = (req, res, next) => {
 };
 
 
-app.get("/", requireLogin, (req, res) => {
-	res.render("home");
+app.get("/", requireLogin, async (req, res) => {
+	try {
+		const currentUser = req.session.user;
+		const getRelatedUsersQuery = `
+			SELECT DISTINCT u.id, u.username
+			FROM users u
+			JOIN messages m ON u.id = m.source OR u.id = m.target
+			WHERE (m.source = ? OR m.target = ?) AND u.id != ?
+		`;
+		const userContacts = await dbQuery(getRelatedUsersQuery, [currentUser.id, currentUser.id, currentUser.id]);
+
+		res.render("home", { currentUser, userContacts });
+	} catch (error) {
+		console.error("Error fetching related users:", error);
+	}
 });
 
 app.get("/login", (req, res, next) => {if (req.session.loggedIn) res.redirect("/"); else next()}, (req, res) => {
@@ -77,7 +90,7 @@ app.get("/login", (req, res, next) => {if (req.session.loggedIn) res.redirect("/
 // Handling login form submission
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
-
+	
   try {
     // Retrieve the user from the database based on the username
     const getUserQuery = "SELECT * FROM users WHERE email = ?";
@@ -91,6 +104,10 @@ app.post("/login", async (req, res) => {
 
       if (passwordMatch) {
         req.session.loggedIn = true;
+
+				delete user.password;
+				req.session.user = user;
+
         res.redirect("/");
         return;
       }
@@ -142,6 +159,27 @@ app.post("/register", async (req, res) => {
     res.redirect("/register");
   }
 });
+
+app.get("/search-users", requireLogin, async (req, res) => {
+  try {
+    const currentUser = req.session.user; // Assuming you store user information in the session
+    const { searchQuery } = req.query;
+
+    // Fetch users that match the search query
+    const searchUsersQuery = `
+      SELECT id, username
+      FROM users
+      WHERE username LIKE ? AND id != ?
+    `;
+    const matchingUsers = await dbQuery(searchUsersQuery, [`%${searchQuery}%`, currentUser.id]);
+
+    res.json({ matchingUsers });
+  } catch (error) {
+    console.error("Error searching for users:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 app.listen(port, () => {
 	console.log(`Server is running at http://localhost:${port}`);

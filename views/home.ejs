@@ -11,21 +11,25 @@
 		<chat>
 			<aside>
 				<div class="search">
-					<input type="text" placeholder="Find a chat buddy">
+					<input type="text" id="search-users" placeholder="Find a chat buddy">
+					<div class="users">
+
+					</div>
 				</div>
 				<div class="users">
-					<div class="user">
-						<div class="avatar"><img src="/assets/logo/logo.svg" alt=""></div>
-						<div class="username">Arouna</div>
-					</div>
-					<div class="user">
-						<div class="avatar"><img src="/assets/logo/logo.svg" alt=""></div>
-						<div class="username">Arouna</div>
-					</div>
+					<p>Recently contacted users</p>
+					<% for (const user of userContacts) { %>
+						<% if (!user.avatar) user.avatar = "assets/logo/logo.svg"; %>
+						<div class="user">
+							<div class="avatar"><img src="<%= user.avatar %>" alt=""></div>
+							<div class="username"><%= user.username %></div>
+						</div>
+					<% } %>
 				</div>
 			</aside>
 	
 			<chat-wrapper>
+				<div class="loader"><div class="icon"></div></div>
 				<div class="info">
 					<div class="user">
 						<div class="avatar"><img src="/assets/logo/logo.svg" alt=""></div>
