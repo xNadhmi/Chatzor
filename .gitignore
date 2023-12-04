@@ -1,2 +1,5 @@
 
 node_modules
+
+# contains database credentials
+db.json
