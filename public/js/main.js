@@ -2,6 +2,51 @@
 
 const searchUserInput = document.querySelector("aside .search input#search-users");
 const newUsersContainer = document.querySelector("aside .search .users");
+let chat = {
+	aside: {
+		elem:									document.querySelector("chat aside"),
+		search: {
+			elem:								document.querySelector("chat aside > .search"),
+			input:							document.querySelector("chat aside > .search input"),
+			users: {
+				elem:							document.querySelector("chat aside > .search .users"),
+			},
+
+			minQueryLength:			2,
+		},
+		users: {
+			elem:								document.querySelector("chat aside > .users"),
+			loader:							document.querySelector("chat aside > .users .loader"),
+			contacts:						[],
+		},
+	},
+
+	conversation: {
+		elem:									document.querySelector("chat conversation"),
+		loader:								document.querySelector("chat conversation > .loader"),
+		info: {
+			elem:								document.querySelector("chat conversation > .info"),
+		},
+		messages: {
+			elem:								document.querySelector("chat conversation > messages"),
+		},
+
+		send: {
+			elem:								document.querySelector("chat conversation > chat-send"),
+			input:							document.querySelector("chat conversation > chat-send input"),
+			button:							document.querySelector("chat conversation > chat-send button"),
+			spamTime:						500,
+		},
+	},
+
+	sfx: {
+		incoming:							new Audio("./assets/sfx/incoming.mp3"),
+	},
+};
+
+
+
+
 
 // Function to fetch matching users based on search query
 const searchUsers = async (query) => {
