@@ -74,20 +74,6 @@ const requireLogin = (req, res, next) => {
 
 
 app.get("/", requireLogin, async (req, res) => {
-	try {
-		const currentUser = req.session.user;
-		const getRelatedUsersQuery = `
-			SELECT DISTINCT u.id, u.username
-			FROM users u
-			JOIN messages m ON u.id = m.source OR u.id = m.target
-			WHERE (m.source = ? OR m.target = ?) AND u.id != ?
-		`;
-		const userContacts = await dbQuery(getRelatedUsersQuery, [currentUser.id, currentUser.id, currentUser.id]);
-
-		res.render("home", { currentUser, userContacts });
-	} catch (error) {
-		console.error("Error fetching related users:", error);
-	}
 });
 
 app.get("/login", (req, res, next) => {if (req.session.loggedIn) res.redirect("/"); else next()}, (req, res) => {
@@ -167,7 +153,25 @@ app.post("/register", async (req, res) => {
   }
 });
 
+app.get("/get-contacts", requireLogin, async (req, res) => {
+	try {
+		let user = req.session.user;
+		let dbQuery = `
+			SELECT DISTINCT u.id, u.username
+			FROM users u
+			JOIN messages m ON u.id = m.source OR u.id = m.target
+			WHERE (m.source = ? OR m.target = ?) AND u.id != ?
+		`;
+		let contacts = await pool.query(dbQuery, [user.id, user.id, user.id]);
 		contacts.map(contact => contact.isOnline = onlineUsers.has(contact.id));
+
+		res.json({ contacts });
+	} catch (error) {
+		console.error("Error fetching related users:", error);
+	}
+});
+
+
 app.get("/search-users", requireLogin, async (req, res) => {
   try {
     const currentUser = req.session.user; // Assuming you store user information in the session
