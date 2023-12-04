@@ -260,4 +260,64 @@ chat.conversation.init = () => {
 	});
 };
 chat.conversation.init();
+
+
+chat.conversation.sendMessage = (content) => {
+	const message = {
+		type: "chat",
+		targetID: chat.conversation.ws.target.id,
+		content,
+	};
+
+	chat.conversation.ws.send(JSON.stringify(message));
+
+	let div = document.createElement("message");
+	div.setAttribute("sender-username", "Me");
+	div.setAttribute("sent", true);
+	div.setAttribute("timestamp", "Now");
+	div.textContent = content;
+	chat.conversation.messages.elem.appendChild(div);
+
+	div.scrollIntoView();
+
+
+	let contact = chat.aside.users.contacts.find(contact => (
+		contact.id === chat.conversation.ws.target.id
+	));
+
+	if (!contact) {
+		let div = document.createElement("div");
+		div.classList.add("user");
+		div.setAttribute("new-message", true);
+		div.setAttribute("online", chat.conversation.ws.target.isOnline);
+		div.innerHTML = `
+			<div class="avatar"><img src="${chat.conversation.ws.target.avatar}" alt=""></div>
+			<div class="username">${chat.conversation.ws.target.username}</div>
+		`;
+
+		div.addEventListener("click", () => {chat.conversation.setTarget(chat.conversation.ws.target); div.removeAttribute("new-message");});
+
+		chat.aside.users.elem.prepend(div);
+		chat.aside.users.contacts.push({id: chat.conversation.ws.target.id, username: chat.conversation.ws.target.username, elem: div});
+	}
+};
+
+chat.conversation.send.button.addEventListener("click", () => {
+	let message = chat.conversation.send.input.value.trim();
+	if (Date.now() - (chat.conversation.send.lastTick || 0) >= chat.conversation.send.spamTime && message.length > 0) {
+		chat.conversation.sendMessage(message);
+		chat.conversation.send.input.value = "";
+		chat.conversation.send.lastTick = Date.now();
+	}
+});
+
+chat.conversation.send.elem.addEventListener("keypress", (event) => {
+	if (event.key === "Enter") {
+		let message = chat.conversation.send.input.value.trim();
+		if (Date.now() - (chat.conversation.send.lastTick || 0) >= chat.conversation.send.spamTime && message.length > 0) {
+			chat.conversation.sendMessage(message);
+			chat.conversation.send.input.value = "";
+			chat.conversation.send.lastTick = Date.now();
+		}
+	}
 });
