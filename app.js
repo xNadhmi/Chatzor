@@ -268,6 +268,7 @@ wss.on("connection", (ws, req) => {
 	});
 });
 
+// Function to broadcast online status to other clients
 function broadcastOnlineStatus(userID, isOnline) {
 	wss.clients.forEach((client) => {
 		if (client.readyState === WebSocket.OPEN && client.userId !== userID) {

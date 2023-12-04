@@ -1,7 +1,5 @@
 
 
-const searchUserInput = document.querySelector("aside .search input#search-users");
-const newUsersContainer = document.querySelector("aside .search .users");
 let chat = {
 	aside: {
 		elem:									document.querySelector("chat aside"),
