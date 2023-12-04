@@ -229,6 +229,38 @@ wss.on("connection", (ws, req) => {
 	onlineUsers.add(currentUser.id);
 	currentUser.isOnline = true;
 	broadcastOnlineStatus(currentUser.id, true);
+
+	ws.on("message", async (message) => {
+		try {
+			const parsedMessage = JSON.parse(message);
+
+			if (parsedMessage.type === "chat") {
+				const targetID = parsedMessage.targetID;
+				const content = parsedMessage.content;
+				// const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+				const timestamp = Date.now();
+				
+				const query = "INSERT INTO messages (source, target, content, timestamp) VALUES (?, ?, ?, FROM_UNIXTIME(?))";
+				await pool.query(query, [currentUser.id, targetID, content, timestamp / 1000]);
+
+				// Broadcast the message to the target user
+				wss.clients.forEach((client) => {
+					if (client !== ws && client.userID === targetID) {
+						client.send(JSON.stringify({
+							type: "chat",
+							content,
+							sender: currentUser,
+							targetID: targetID,
+							timestamp
+						}));
+					}
+				});
+			}
+		} catch (error) {
+			console.error("[WebSocket] Error processing message:", error);
+		}
+	});
+
 	ws.on("close", (code, message) => {
 		onlineUsers.delete(currentUser.id);
 		currentUser.isOnline = false;
