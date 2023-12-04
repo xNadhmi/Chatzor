@@ -1,6 +1,7 @@
 
 const express = require("express");
 const session = require("express-session");
+const fs = require("fs");
 const mysql = require("mysql");
 const bcrypt = require("bcrypt");
 const util = require("util");
@@ -9,19 +10,21 @@ const app = express();
 const port = 3000;
 
 app.use(session({
-  secret: "XvYBTRckc5mkdoJ",
-  resave: true,
-  saveUninitialized: true,
+	secret: "XvYBTRckc5mkdoJ",
+	resave: true,
+	saveUninitialized: true,
 }));
+app.use(cors()); // Enable CORS for all routes
+let gCurrentUser = null;
+
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
 
 
-const dbConfig = {
-	host: "srv1123.hstgr.io",
-	port: "3306",
-	user: "u549231978_hetic_g_04",
-	password: "Hetic2023$",
-	database: "u549231978_hetic_g_04",
-};
+
+const dbCredentials = JSON.parse(fs.readFileSync("db.json", "utf-8"));
+
+const dbConfig = dbCredentials.dbConfig
 
 var [connection, dbQuery] = [];
 function dbConnect() {
