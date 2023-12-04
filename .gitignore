@@ -6,3 +6,4 @@ db.json
 
 # ignore css files
 *.css
+*.css.map
