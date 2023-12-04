@@ -189,4 +189,75 @@ chat.conversation.setTarget = async (user) => {
 	}
 };
 
+chat.conversation.init = () => {
+  // Open a WebSocket connection for the conversation
+	chat.conversation.ws = new WebSocket("ws://" + location.host + "/");
+	
+	chat.conversation.ws.addEventListener("open", () => {
+		console.log("WebSocket connection opened");
+	
+		// Handle incoming messages from the WebSocket server
+		chat.conversation.ws.addEventListener("message", (event) => {
+			try {
+				const parsedMessage = JSON.parse(event.data);
+				if (parsedMessage.type === "chat") {
+					if (!parsedMessage.sender.avatar) parsedMessage.sender.avatar = "assets/logo/logo.svg";
+					if (parsedMessage.sender.id === chat.conversation.ws.target?.id) {
+						
+						let timestamp = new Date(parsedMessage.timestamp).toISOString().slice(0, 19).replace('T', ' ');
+						let div = document.createElement("message");
+						div.setAttribute("sender-username", parsedMessage.sender.username);
+						div.setAttribute("timestamp", timestamp);
+						div.textContent = parsedMessage.content;
+						chat.conversation.messages.elem.appendChild(div);
+	
+						div.scrollIntoView();
+					} else {
+						let contact = chat.aside.users.contacts.find(contact => (
+							contact.id === parsedMessage.sender.id
+						));
+						if (contact) {
+							contact.elem.setAttribute("new-message", true);
+						} else {
+							
+							let div = document.createElement("div");
+							div.classList.add("user");
+							div.setAttribute("new-message", true);
+							div.setAttribute("online", parsedMessage.sender.isOnline);
+							div.innerHTML = `
+								<div class="avatar"><img src="${parsedMessage.sender.avatar}" alt=""></div>
+								<div class="username">${parsedMessage.sender.username}</div>
+							`;
+					
+							div.addEventListener("click", () => {chat.conversation.setTarget(parsedMessage.sender); div.removeAttribute("new-message");});
+					
+							chat.aside.users.elem.prepend(div);
+							chat.aside.users.contacts.push({id: parsedMessage.sender.id, username: parsedMessage.sender.username, elem: div});
+						}
+					}
+
+					chat.sfx.incoming.load();
+					chat.sfx.incoming.play();
+
+				} else if (parsedMessage.type === "onlineStatus") {
+					let contact = chat.aside.users.contacts.find(contact => (
+						contact.id === parsedMessage.userID
+					));
+					if (contact) {
+						contact.elem.setAttribute("online", parsedMessage.isOnline);
+						contact.isOnline = parsedMessage.isOnline;
+					}
+				}
+	
+			} catch (error) {
+				console.error("[WebSocket] Error processing message:", error);
+			}
+		});
+	});
+
+	chat.conversation.ws.addEventListener("error", (event) => {
+		console.error("[WebSocket] Connection error:", event);
+	});
+};
+chat.conversation.init();
 });
