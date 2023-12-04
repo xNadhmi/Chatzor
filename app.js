@@ -173,24 +173,46 @@ app.get("/get-contacts", requireLogin, async (req, res) => {
 
 
 app.get("/search-users", requireLogin, async (req, res) => {
-  try {
-    const currentUser = req.session.user; // Assuming you store user information in the session
-    const { searchQuery } = req.query;
+	try {
+		let user = req.session.user;
+		const { query } = req.query;
 
-    // Fetch users that match the search query
-    const searchUsersQuery = `
-      SELECT id, username
-      FROM users
-      WHERE username LIKE ? AND id != ?
-    `;
-    const matchingUsers = await dbQuery(searchUsersQuery, [`%${searchQuery}%`, currentUser.id]);
-
-    res.json({ matchingUsers });
-  } catch (error) {
-    console.error("Error searching for users:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+		// Fetch users that match the search query
+		const dbQuery = `
+			SELECT id, username
+			FROM users
+			WHERE username LIKE ? AND id != ?
+		`;
+		let users = await pool.query(dbQuery, [`%${query}%`, user.id]);
 		users.map(user => user.isOnline = onlineUsers.has(user.id));
+
+		res.json({ users });
+	} catch (error) {
+		console.error("Error searching for users:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+app.get("/get-history", requireLogin, async (req, res) => {
+	try {
+		let user = req.session.user;
+		let {targetID} = req.query;
+
+		let dbQuery = `
+			SELECT m.*, u.id AS senderID, u.username AS senderUsername
+			FROM messages m JOIN users u ON m.source = u.id
+			WHERE (m.source = ? AND m.target = ?) OR (m.source = ? AND m.target = ?)
+			ORDER BY m.timestamp ASC;
+		`;
+		let messages = await pool.query(dbQuery, [user.id, targetID, targetID, user.id]);
+		messages.map((message) => {message.sent = message.source == user.id;});
+
+		res.json({ messages });
+	} catch (error) {
+		console.error("Error searching for messages:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
 	onlineUsers.add(currentUser.id);
 	currentUser.isOnline = true;
 	broadcastOnlineStatus(currentUser.id, true);
