@@ -117,41 +117,41 @@ app.post("/login", async (req, res) => {
 app.get("/register", (req, res, next) => {if (req.session.loggedIn) res.redirect("/"); else next()}, (req, res) => {
 	res.render("register");
 });
-
 // Handling registration form submission
 app.post("/register", async (req, res) => {
-  const { username, email, password, confirmPassword } = req.body;
+	const { username, email, password, confirmPassword } = req.body;
 
-  // Basic validation
-  if (!username || !email || !password || password !== confirmPassword) {
-    res.redirect("/register");
-    return;
-  }
+	// Basic validation
+	if (!username || !email || !password || password !== confirmPassword) {
+		res.redirect("/register");
+		return;
+	}
 
-  try {
-    // Hash and salt the password using bcrypt
-    const hashedPassword = await bcrypt.hash(password, 10);
+	try {
+		// Hash and salt the password using bcrypt
+		const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Check if the username or email already exists in the database
-    const userExistsQuery = "SELECT * FROM users WHERE username = ? OR email = ?";
-    const userExistsResults = await dbQuery(userExistsQuery, [username, email]);
+		// Check if the username or email already exists in the database
+		const userExistsQuery = "SELECT * FROM users WHERE username = ? OR email = ?";
+		const userExistsResults = await pool.query(userExistsQuery, [username, email]);
 
-    if (userExistsResults.length > 0) {
-      // User with the same username or email already exists
-      res.redirect("/register");
-      return;
-    }
+		if (userExistsResults.length > 0) {
+			// User with the same username or email already exists
+			res.redirect("/register");
+			return;
+		}
 
-    // Insert the new user into the database with the hashed password
-    const insertUserQuery = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
-    await dbQuery(insertUserQuery, [username, email, hashedPassword]);
+		// Insert the new user into the database with the hashed password
+		const insertUserQuery = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+		await pool.query(insertUserQuery, [username, email, hashedPassword]);
 
-    res.redirect("/login");
-  } catch (error) {
-    console.error("Error registering user:", error);
-    res.redirect("/register");
-  }
+		res.redirect("/login");
+	} catch (error) {
+		console.error("Error registering user:", error);
+		res.redirect("/register");
+	}
 });
+
 
 app.get("/get-contacts", requireLogin, async (req, res) => {
 	try {
