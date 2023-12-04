@@ -1,6 +1,7 @@
 {
   "name": "chatzor",
   "version": "0.0.1",
+  "version": "0.5.0",
   "description": "Live chat web app",
   "main": "app.js",
   "scripts": {
