@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/main.css">
-  <title>Your Chat App</title>
+	<link rel="shortcut icon" href="/assets/favicon/favicon.ico" type="image/x-icon">
+  <title>Chatzor!</title>
 </head>
 <body>
 	<main>
@@ -13,39 +14,32 @@
 				<div class="search">
 					<input type="text" id="search-users" placeholder="Find a chat buddy">
 					<div class="users">
-
+						<!-- Dynamically loaded -->
 					</div>
 				</div>
-				<div class="users">
-					<p>Recently contacted users</p>
-					<% for (const user of userContacts) { %>
-						<% if (!user.avatar) user.avatar = "assets/logo/logo.svg"; %>
-						<div class="user">
-							<div class="avatar"><img src="<%= user.avatar %>" alt=""></div>
-							<div class="username"><%= user.username %></div>
-						</div>
-					<% } %>
+				<div class="users" subtitle="Recent contacts">
+					<div class="loader"><div class="icon"></div></div>
+					<!-- Dynamically loaded -->
 				</div>
 			</aside>
 	
-			<chat-wrapper>
+			<conversation>
 				<div class="loader"><div class="icon"></div></div>
 				<div class="info">
 					<div class="user">
 						<div class="avatar"><img src="/assets/logo/logo.svg" alt=""></div>
-						<div class="username">Arouna</div>
+						<div class="username">Start a conversation</div>
 					</div>
-					<div class="settings">settings</div>
 				</div>
-				<chat-content>
-					<chat-message sender-username="Arouna" sent="false">Hey</chat-message>
-					<chat-message sender-username="Me" sent="true">Hello</chat-message>
-				</chat-content>
+				<messages>
+					<message sender-username="Arouna" sent="false">Hey</message>
+					<message sender-username="Me" sent="true">Hello</message>
+				</messages>
 				<chat-send>
-					<input type="text" placeholder="Message">
-					<button>send</button>
+					<input type="text" id="message" placeholder="Message">
+					<button id="send" color="blue">send</button>
 				</chat-send>
-			</chat-wrapper>
+			</conversation>
 		</chat>
 	</main>
   <script src="/js/main.js"></script>
