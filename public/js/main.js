@@ -141,4 +141,28 @@ chat.aside.users.updateContacts = async () => {
 	chat.aside.users.loader.setAttribute("loaded", "");
 };
 chat.aside.users.updateContacts();
+
+
+
+
+chat.conversation.getHistory = async (targetID) => {
+	try {
+		const response = await fetch(`/get-history?targetID=${targetID}`);
+		const data = await response.json();
+		
+		return data.messages;
+	} catch (error) {
+		console.error("Error searching for users:", error);
+		return [];
+	}
+};
+		let previousMessages = await chat.conversation.getHistory(user.id);
+		previousMessages.forEach(message => {
+			let div = document.createElement("message");
+			div.setAttribute("sent", message.sent);
+			div.setAttribute("sender-username", message.sent ? "Me" : message.senderUsername);
+			div.setAttribute("timestamp", message.timestamp);
+			div.textContent = message.content;
+			chat.conversation.messages.elem.appendChild(div);
+		});
 });
