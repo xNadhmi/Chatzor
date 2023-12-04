@@ -102,13 +102,43 @@ chat.aside.search.input.addEventListener("input", async () => {
 
 
 
+chat.aside.users.getContacts = async (query) => {
+	try {
+		const response = await fetch(`/get-contacts`);
+		const data = await response.json();
+		
+		return data.contacts;
+	} catch (error) {
+		console.error("Error searching for users:", error);
+		return [];
+	}
+};
 
-  if (query.length >= 2) {
-    const matchingUsers = await searchUsers(query);
-    updateUsersUI(matchingUsers);
+chat.aside.users.updateContacts = async () => {
+	chat.aside.users.loader.removeAttribute("loaded");
 
-  } else {
-    newUsersContainer.innerHTML = "";
-		newUsersContainer.removeAttribute("users-found");
-  }
+	chat.aside.users.contacts = [];
+	let users = await chat.aside.users.getContacts();
+
+	users.forEach(user => {
+		if (!user.avatar) user.avatar = "assets/logo/logo.svg";
+		let div = document.createElement("div");
+		div.classList.add("user");
+		div.setAttribute("online", user.isOnline);
+
+		div.innerHTML = `
+			<div class="avatar"><img src="${user.avatar}" alt=""></div>
+			<div class="username">${user.username}</div>
+		`;
+
+		div.addEventListener("click", () => {chat.conversation.setTarget(user); div.removeAttribute("new-message");});
+
+		chat.aside.users.elem.appendChild(div);
+		chat.aside.users.contacts.push({id: user.id, username: user.username, elem: div});
+	});
+
+
+	chat.aside.users.loader.setAttribute("loaded", "");
+};
+chat.aside.users.updateContacts();
 });
