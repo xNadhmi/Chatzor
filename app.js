@@ -20,6 +20,7 @@ let gCurrentUser = null;
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+const onlineUsers = new Set();
 
 
 const dbCredentials = JSON.parse(fs.readFileSync("db.json", "utf-8"));
@@ -163,6 +164,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
+		contacts.map(contact => contact.isOnline = onlineUsers.has(contact.id));
 app.get("/search-users", requireLogin, async (req, res) => {
   try {
     const currentUser = req.session.user; // Assuming you store user information in the session
@@ -181,8 +183,30 @@ app.get("/search-users", requireLogin, async (req, res) => {
     console.error("Error searching for users:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
+		users.map(user => user.isOnline = onlineUsers.has(user.id));
+	onlineUsers.add(currentUser.id);
+	currentUser.isOnline = true;
+	broadcastOnlineStatus(currentUser.id, true);
+	ws.on("close", (code, message) => {
+		onlineUsers.delete(currentUser.id);
+		currentUser.isOnline = false;
+		broadcastOnlineStatus(currentUser.id, false);
+	});
 });
 
+function broadcastOnlineStatus(userID, isOnline) {
+	wss.clients.forEach((client) => {
+		if (client.readyState === WebSocket.OPEN && client.userId !== userID) {
+			if (isOnline) {
+				onlineUsers.forEach(userID => {
+					client.send(JSON.stringify({type: "onlineStatus", userID, isOnline: true}));
+				});
+			} else {
+				client.send(JSON.stringify({type: "onlineStatus", userID, isOnline}));
+			}
+		}
+	});
+}
 
 app.listen(port, () => {
 	console.log(`Server is running at http://localhost:${port}`);
