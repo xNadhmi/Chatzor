@@ -1,5 +1,7 @@
 
 input {
+	$main-color: $color-white;
+
 	@include display-flex(row, flex-start, center, 1rem);
 
 	height: 2.5rem;
@@ -7,5 +9,5 @@ input {
 	border-radius: 0.25rem;
 	border: none;
 	background-color: transparent;
-	outline: 2px solid rgba($color-white, 0.2);
+	outline: 2px solid rgba($main-color, 0.2);
 }
