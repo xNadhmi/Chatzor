@@ -82,36 +82,37 @@ app.get("/login", (req, res, next) => {if (req.session.loggedIn) res.redirect("/
 
 // Handling login form submission
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-	
-  try {
-    // Retrieve the user from the database based on the username
-    const getUserQuery = "SELECT * FROM users WHERE email = ?";
-    const userResults = await dbQuery(getUserQuery, [email]);
+	const { email, password } = req.body;
 
-    if (userResults.length === 1) {
-      const user = userResults[0];
+	try {
+		// Retrieve the user from the database based on the username
+		const getUserQuery = "SELECT * FROM users WHERE email = ?";
+		const userResults = await pool.query(getUserQuery, [email]);
 
-      // Compare the provided password with the hashed password in the database
-      const passwordMatch = await bcrypt.compare(password, user.password);
+		if (userResults.length === 1) {
+			const user = userResults[0];
 
-      if (passwordMatch) {
-        req.session.loggedIn = true;
+			// Compare the provided password with the hashed password in the database
+			const passwordMatch = await bcrypt.compare(password, user.password);
+
+			if (passwordMatch) {
+				req.session.loggedIn = true;
 
 				delete user.password;
 				req.session.user = user;
+				gCurrentUser = req.session.user;
 
-        res.redirect("/");
-        return;
-      }
-    }
+				res.redirect("/");
+				return;
+			}
+		}
 
-    // Either the user does not exist or the password is incorrect
-    res.redirect("/login");
-  } catch (error) {
-    console.error("Error during login:", error);
-    res.redirect("/login");
-  }
+		// Either the user does not exist or the password is incorrect
+		res.redirect("/login");
+	} catch (error) {
+		console.error("Error during login:", error);
+		res.redirect("/login");
+	}
 });
 
 app.get("/register", (req, res, next) => {if (req.session.loggedIn) res.redirect("/"); else next()}, (req, res) => {
