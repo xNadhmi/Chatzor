@@ -148,13 +148,36 @@ chat {
 			}
 		}
 
-		chat-content {
+		messages {
 			@include display-flex(column, flex-start, center, 1.5rem);
 			
 			width: 100%;
 			height: 100%;
+			padding: 0 0.5rem;
+			overflow-y: auto;
+			scrollbar-gutter: stable both-edges;
 
-			chat-message {
+			.indicator {
+				@include display-flex(row, flex-start, center, 0.5rem);
+
+				width: 100%;
+				padding: 0 1rem;
+				font-style: italic;
+				font-weight: 400;
+				user-select: none;
+				white-space: nowrap;
+				opacity: 0.5;
+
+				&::before, &::after {
+					content: "";
+					width: 100%;
+					height: 1px;
+					background-color: $color-white;
+					opacity: 0.5;
+				}
+			}
+
+			message {
 				position: relative;
 				@include display-flex(row, flex-start, center, 0.5rem);
 
@@ -164,18 +187,20 @@ chat {
 				background-color: rgba($color-white, 0.1);
 
 				&::after {
-					content: attr(sender-username);
+					content: attr(sender-username) " • " attr(timestamp);
 					position: absolute;
 					bottom: 0;
 					padding: 0 0.25rem;
 					translate: 0 100%;
 					font-size: 0.75rem;
-					opacity: 0.6;
 					font-weight: 300;
 					font-style: italic;
+					opacity: 0;
+					transition: opacity 0.2s ease-out;
 				}
+				&:hover::after {opacity: 0.6;}
 				
-				&[sent="false"] {
+				&:not([sent="true"]) {
 					border-bottom-left-radius: 0;
 					margin-right: auto;
 
@@ -201,7 +226,7 @@ chat {
 			@include display-flex(row, flex-start, center, 0.5rem);
 
 			width: 100%;
-			padding: 1rem;
+			padding: 0 0.5rem;
 
 			input {
 				width: 100%;
