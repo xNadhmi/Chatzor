@@ -4,7 +4,10 @@ const session = require("express-session");
 const fs = require("fs");
 const mysql = require("mysql");
 const bcrypt = require("bcrypt");
+const cors = require("cors");
 const util = require("util");
+const http = require("http");
+const WebSocket = require("ws");
 
 const app = express();
 const port = 3000;
@@ -216,6 +219,13 @@ app.get("/get-history", requireLogin, async (req, res) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 });
+
+
+// WebSocket connections
+wss.on("connection", (ws, req) => {
+	const currentUser = req.session?.user || gCurrentUser;
+	ws.userID = currentUser.id;
+
 	onlineUsers.add(currentUser.id);
 	currentUser.isOnline = true;
 	broadcastOnlineStatus(currentUser.id, true);
@@ -240,6 +250,10 @@ function broadcastOnlineStatus(userID, isOnline) {
 	});
 }
 
-app.listen(port, () => {
+
+
+
+server.listen(port, (err) => {
+	if (err) throw err;
 	console.log(`Server is running at http://localhost:${port}`);
 });
