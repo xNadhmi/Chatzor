@@ -27,24 +27,26 @@ const dbCredentials = JSON.parse(fs.readFileSync("db.json", "utf-8"));
 
 const dbConfig = dbCredentials.dbConfig
 
-var [connection, dbQuery] = [];
+let pool;
+
 function dbConnect() {
-	// Set up MySQL connection
-	connection = mysql.createConnection(dbConfig);
+	pool = mysql.createPool(dbConfig);
 
-	dbQuery = util.promisify(connection.query).bind(connection);
+	// Promisify the query method
+	pool.query = util.promisify(pool.query);
 
-	connection.connect((err) => {
+	pool.getConnection((err, connection) => {
 		if (err) {
 			console.error("[MYSQL] Error connecting:", err);
 		} else {
 			console.log("[MYSQL]: Connected to database");
+			connection.release();
 		}
 	});
-	
-	connection.on("error", function(err) {
+
+	pool.on("error", (err) => {
 		console.log("db error", err);
-		if(err.code === "PROTOCOL_CONNECTION_LOST") {
+		if (err.code === "PROTOCOL_CONNECTION_LOST") {
 			console.log("[MYSQL]: Attempting reconnection");
 			dbConnect();
 		} else {
@@ -52,7 +54,8 @@ function dbConnect() {
 		}
 	});
 }
-dbConnect()
+
+dbConnect();
 
 // Set EJS as the view engine
 app.set("view engine", "ejs");
