@@ -49,45 +49,59 @@ let chat = {
 
 
 // Function to fetch matching users based on search query
-const searchUsers = async (query) => {
-  try {
-    const response = await fetch(`/search-users?searchQuery=${query}`);
-    const data = await response.json();
-    return data.matchingUsers;
-  } catch (error) {
-    console.error('Error searching for users:', error);
-    return [];
-  }
+chat.aside.search.query = async (query) => {
+	try {
+		const response = await fetch(`/search-users?query=${query}`);
+		const data = await response.json();
+		return data.users;
+	} catch (error) {
+		console.error("Error searching for users:", error);
+		return [];
+	}
 };
 
+
 // Function to update the UI with matching users
-const updateUsersUI = (users) => {
-  newUsersContainer.innerHTML = "";
-	newUsersContainer.setAttribute("users-found", "Found " + users.length + " user(s)");
+chat.aside.search.users.update = (users) => {
+	chat.aside.search.users.elem.innerHTML = "";
+	chat.aside.search.users.elem.setAttribute("subtitle", "Found " + users.length + " user(s)");
 
-  users.forEach((user) => {
+	users.forEach((user) => {
 		if (!user.avatar) user.avatar = "assets/logo/logo.svg";
-
-    const userDiv = document.createElement("div");
-    userDiv.classList.add("user");
-		userDiv.innerHTML = `
+		
+		let div = document.createElement("div");
+		div.classList.add("user");
+		div.innerHTML = `
 			<div class="avatar"><img src="${user.avatar}" alt=""></div>
 			<div class="username">${user.username}</div>
 		`;
 
-    // Add click event to initiate a conversation, customize as needed
-    userDiv.addEventListener('click', () => {
-      // Implement logic to initiate a conversation with the selected user
-      console.log(`Initiate conversation with ${user.username}`);
-    });
+		div.addEventListener("click", () => {
+			chat.conversation.setTarget(user);
+			div.removeAttribute("new-message");
+		});
 
-    newUsersContainer.appendChild(userDiv);
-  });
+		chat.aside.search.users.elem.appendChild(div);
+	});
 };
 
+
 // Event listener for input changes on the search box
-searchUserInput.addEventListener("input", async () => {
-  const query = searchUserInput.value.trim();
+chat.aside.search.input.addEventListener("input", async () => {
+	let query = chat.aside.search.input.value.trim();
+
+	if (query.length >= chat.aside.search.minQueryLength) {
+		let users = await chat.aside.search.query(query);
+		chat.aside.search.users.update(users);
+
+	} else {
+		chat.aside.search.users.elem.innerHTML = "";
+		chat.aside.search.users.elem.removeAttribute("subtitle");
+	}
+});
+
+
+
 
   if (query.length >= 2) {
     const matchingUsers = await searchUsers(query);
