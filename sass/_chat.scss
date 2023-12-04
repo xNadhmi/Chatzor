@@ -5,6 +5,34 @@ chat {
 	width: 90%;
 	height: 100%;
 
+	.loader {
+		@include display-flex(column, center, center, 1rem);
+
+		position: absolute;
+		inset: 0;
+		background-color: rgba($color-black, 0.5);
+		backdrop-filter: blur(15px);
+		border-radius: 0.5rem;
+		z-index: 99;
+		opacity: 1;
+		transition: opacity 0.3s ease-out;
+
+		&[loaded] {
+			opacity: 0;
+			pointer-events: none;
+		}
+
+		.icon {
+			background-image: url("../assets/spinner.svg");
+			background-repeat: no-repeat;
+			background-size: 100%;
+			width: 5rem;
+			aspect-ratio: 1;
+
+		}
+	}
+
+	
 	aside {
 		@include display-flex(column, flex-start, center, 1rem);
 
