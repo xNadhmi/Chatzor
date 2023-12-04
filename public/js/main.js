@@ -156,6 +156,22 @@ chat.conversation.getHistory = async (targetID) => {
 		return [];
 	}
 };
+
+
+chat.conversation.setTarget = async (user) => {
+	chat.conversation.loader.removeAttribute("loaded");
+	if (user?.id && chat.conversation.ws.readyState === WebSocket.OPEN) {
+		let div_user = chat.conversation.info.elem.querySelector(".user");
+		let user_img = div_user.querySelector(".avatar img");
+		let user_username = div_user.querySelector(".username");
+		
+		div_user.setAttribute("online", user.isOnline);
+		user_img.setAttribute("src", user.avatar);
+		user_username.textContent = user.username;
+
+		chat.conversation.ws.target = user;
+
+		chat.conversation.messages.elem.innerHTML = "<div class='indicator'>This is the beginning of your conversation</div>";
 		let previousMessages = await chat.conversation.getHistory(user.id);
 		previousMessages.forEach(message => {
 			let div = document.createElement("message");
@@ -165,4 +181,12 @@ chat.conversation.getHistory = async (targetID) => {
 			div.textContent = message.content;
 			chat.conversation.messages.elem.appendChild(div);
 		});
+		
+		if (previousMessages.length > 0 ) chat.conversation.messages.elem.innerHTML += "<div class='indicator'>Newer messages will appear below</div>";
+
+
+		chat.conversation.loader.setAttribute("loaded", "");
+	}
+};
+
 });
