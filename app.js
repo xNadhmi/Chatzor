@@ -74,6 +74,8 @@ const requireLogin = (req, res, next) => {
 
 
 app.get("/", requireLogin, async (req, res) => {
+	gCurrentUser = req.session.user;
+	res.render("home");
 });
 
 app.get("/login", (req, res, next) => {if (req.session.loggedIn) res.redirect("/"); else next()}, (req, res) => {
