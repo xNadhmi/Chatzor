@@ -16,7 +16,6 @@ To run Chatzor locally, follow these steps:
 git clone https://github.com/xNadhmi/Chatzor/
 ```
 
-<br>
 ### 2. Install dependencies:
 
 Chatzor relies on the following npm packages: `bcrypt` `mysql` `cors` `ejs` `express` `express-session` `ws` and `sass`
@@ -33,7 +32,7 @@ or
 npm install bcrypt mysql cors ejs express express-session ws sass
 ```
 
-<br>
+
 ### 3. Set up the database:
 
 - Create a MySQL database.
@@ -51,7 +50,7 @@ npm install bcrypt mysql cors ejs express express-session ws sass
 }
 ```
 
-<br>
+
 ### 4. Compile Sass
 
 You will need to recompile Sass files, use:
@@ -60,7 +59,7 @@ You will need to recompile Sass files, use:
 sass --watch sass:public/css
 ```
 
-<br>
+
 ### 5. Run the application:
 
 To start the application, use:
