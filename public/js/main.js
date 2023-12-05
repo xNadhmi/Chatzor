@@ -171,16 +171,25 @@ chat.conversation.setTarget = async (user) => {
 
 		chat.conversation.messages.elem.innerHTML = "<div class='indicator'>This is the beginning of your conversation</div>";
 		let previousMessages = await chat.conversation.getHistory(user.id);
+		let previousDate = null;
 		previousMessages.forEach(message => {
+			const utcTimestamp = new Date(message.timestamp);
+			const clientTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+			message.date = new Intl.DateTimeFormat("fr-FR", {year: "numeric", month: "2-digit", day: "2-digit", timeZone: clientTimezone,}).format(utcTimestamp);
+			message.time = new Intl.DateTimeFormat("fr-FR", {hour: "2-digit", minute: "2-digit", second: "2-digit", timeZone: clientTimezone,}).format(utcTimestamp);
+
+			if (previousDate !== message.date) chat.conversation.messages.elem.innerHTML += `<div class='indicator date'>${message.date}</div>`;
+
 			let div = document.createElement("message");
 			div.setAttribute("sent", message.sent);
 			div.setAttribute("sender-username", message.sent ? "Me" : message.senderUsername);
-			div.setAttribute("timestamp", message.timestamp);
+			div.setAttribute("timestamp", message.time);
 			div.textContent = message.content;
 			chat.conversation.messages.elem.appendChild(div);
+
 		});
 		
-		if (previousMessages.length > 0 ) chat.conversation.messages.elem.innerHTML += "<div class='indicator'>Newer messages will appear below</div>";
+		if (previousMessages.length > 0 ) chat.conversation.messages.elem.innerHTML += `<div class="indicator">Today</div>`;
 
 
 		chat.conversation.loader.setAttribute("loaded", "");
