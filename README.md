@@ -10,14 +10,14 @@ Chatzor is a simple web chat application built with Node.js, Express, and WebSoc
 
 To run Chatzor locally, follow these steps:
 
-1. Clone the repository:
+### 1. Clone the repository:
 
 ```bash
 git clone https://github.com/xNadhmi/Chatzor/
 ```
 
 <br>
-2. Install dependencies:
+### 2. Install dependencies:
 
 Chatzor relies on the following npm packages: `bcrypt` `mysql` `cors` `ejs` `express` `express-session` `ws` and `sass`
 
@@ -34,7 +34,7 @@ npm install bcrypt mysql cors ejs express express-session ws sass
 ```
 
 <br>
-3. Set up the database:
+### 3. Set up the database:
 
 - Create a MySQL database.
 - Create a `db.json` file in the project root with your MySQL database credentials, in this structure:
@@ -52,7 +52,7 @@ npm install bcrypt mysql cors ejs express express-session ws sass
 ```
 
 <br>
-4. Compile Sass
+### 4. Compile Sass
 
 You will need to recompile Sass files, use:
 
@@ -61,7 +61,7 @@ sass --watch sass:public/css
 ```
 
 <br>
-5. Run the application:
+### 5. Run the application:
 
 To start the application, use:
 
