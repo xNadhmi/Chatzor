@@ -35,6 +35,7 @@ npm install bcrypt mysql cors ejs express express-session ws sass
 
 <br>
 3. Set up the database:
+
 - Create a MySQL database.
 - Create a `db.json` file in the project root with your MySQL database credentials, in this structure:
 
