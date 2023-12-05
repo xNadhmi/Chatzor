@@ -13,8 +13,7 @@ To run Chatzor locally, follow these steps:
 1. Clone the repository:
 
 ```bash
-git clone <repository-url>
-cd Chatzor
+git clone https://github.com/xNadhmi/Chatzor/
 ```
 
 2. Install dependencies:
