@@ -128,7 +128,10 @@ app.post("/register", async (req, res) => {
 	const { username, email, password, confirmPassword } = req.body;
 
 	// Basic validation
-	if (!username || !email || !password || password !== confirmPassword) {
+	if (
+		!username || !email || !password || password !== confirmPassword
+		|| username.length < 2 || email.length < 3 || password.length < 2
+	) {
 		res.redirect("/register");
 		return;
 	}
