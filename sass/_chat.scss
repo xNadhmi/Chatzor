@@ -105,6 +105,11 @@ chat {
 					width: 2.5rem;
 					aspect-ratio: 1;
 					border-radius: 50%;
+					overflow: hidden;
+
+					&:has(img[src="assets/logo/logo.svg"]), &:has(img[src="/assets/logo/logo.svg"]) {
+						border-radius: 0;
+					}
 	
 					img {
 						width: 100%;
@@ -181,6 +186,11 @@ chat {
 					width: 3rem;
 					aspect-ratio: 1;
 					border-radius: 50%;
+					overflow: hidden;
+
+					&:has(img[src="assets/logo/logo.svg"]), &:has(img[src="/assets/logo/logo.svg"]) {
+						border-radius: 0;
+					}
 	
 					img {
 						width: 100%;
