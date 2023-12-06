@@ -33,7 +33,13 @@ const dbConfig = dbCredentials.dbConfig
 let pool;
 
 function dbConnect() {
-	pool = mysql.createPool(dbConfig);
+	pool = mysql.createPool({
+		host: process.env.DB_HOST || dbConfig.host,
+		port: process.env.DB_PORT || dbConfig.port,
+		database: process.env.DB_NAME || dbConfig.database,
+		user: process.env.DB_USER || dbConfig.user,
+		password: process.env.DB_PASSWORD || dbConfig.password
+	});
 
 	// Promisify the query method
 	pool.query = util.promisify(pool.query);
