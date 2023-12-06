@@ -162,7 +162,7 @@ app.get("/get-contacts", requireLogin, async (req, res) => {
 	try {
 		let user = req.session.user;
 		let dbQuery = `
-			SELECT DISTINCT u.id, u.username
+			SELECT DISTINCT u.id, u.username, u.email, u.avatar
 			FROM users u
 			JOIN messages m ON u.id = m.source OR u.id = m.target
 			WHERE (m.source = ? OR m.target = ?) AND u.id != ?
@@ -184,7 +184,7 @@ app.get("/search-users", requireLogin, async (req, res) => {
 
 		// Fetch users that match the search query
 		const dbQuery = `
-			SELECT id, username
+			SELECT id, username, avatar
 			FROM users
 			WHERE username LIKE ? AND id != ?
 		`;
