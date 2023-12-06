@@ -309,6 +309,7 @@ chat aside .users .user .avatar:has(img[src="assets/logo/logo.svg"]), chat aside
 }
 chat aside .users .user .avatar img {
   width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 chat aside .users .user .username {
@@ -393,6 +394,7 @@ chat conversation .info .user .avatar:has(img[src="assets/logo/logo.svg"]), chat
 }
 chat conversation .info .user .avatar img {
   width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 chat conversation messages {
