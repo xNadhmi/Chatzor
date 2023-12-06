@@ -205,10 +205,11 @@ chat.conversation.setTarget = async (user, clickedDiv) => {
 	}
 };
 
-chat.conversation.init = () => {
+chat.conversation.init = (useInsecure) => {
   // Open a WebSocket connection for the conversation
-	// chat.conversation.ws = new WebSocket("ws://" + location.host + "/");					// USE FOR LOCAL SERVER
-	chat.conversation.ws = new WebSocket("wss://" + location.host + "/");
+	if (useInsecure) chat.conversation.ws = new WebSocket("ws://" + location.host + "/");
+	else chat.conversation.ws = new WebSocket("wss://" + location.host + "/");
+	
 	
 	chat.conversation.ws.addEventListener("open", () => {
 		console.log("[WebSocket] Connection opened");
@@ -274,6 +275,9 @@ chat.conversation.init = () => {
 
 	chat.conversation.ws.addEventListener("error", (event) => {
 		console.error("[WebSocket] Connection error:", event);
+
+		console.log("[WebSocket] Attempting to use insecure Web Socket instead");
+		chat.conversation.init(true)					// USE FOR LOCAL SERVER
 	});
 };
 chat.conversation.init();
