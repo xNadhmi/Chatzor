@@ -25,6 +25,10 @@ chat {
 			pointer-events: none;
 		}
 
+		&::before {
+			content: attr(message);
+		}
+
 		.icon {
 			background-image: url("../assets/spinner.svg");
 			background-repeat: no-repeat;
