@@ -84,13 +84,18 @@ main {
 		@include display-flex(column, flex-start, center, 1rem);
 		
 		width: 25rem;
-		padding: 1rem;
+		padding: 2rem;
 		background-color: rgba($color-white, 0.1);
 		border-radius: 0.5rem;
 
 		input {
 			width: 100%;
 			text-align: center;
+		}
+
+		button {
+			width: 40%;
+			margin-top: 1rem;
 		}
 	}
 }
