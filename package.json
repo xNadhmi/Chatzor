@@ -1,9 +1,11 @@
 {
   "name": "chatzor",
-  "version": "0.0.1",
+  "version": "0.5.0",
   "description": "Live chat web app",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
+    "start": "node app.js",
+    "live": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,5 +22,14 @@
   "bugs": {
     "url": "https://github.com/xNadhmi/Chatzor/issues"
   },
-  "homepage": "https://github.com/xNadhmi/Chatzor#readme"
+  "homepage": "https://github.com/xNadhmi/Chatzor#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mysql": "^2.18.1",
+    "ws": "^8.14.2"
+  }
 }

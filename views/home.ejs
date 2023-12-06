@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/main.css">
+	<link rel="shortcut icon" href="/assets/favicon/favicon.ico" type="image/x-icon">
+  <title>Chatzor!</title>
+</head>
+<body>
+	<main>
+		<chat>
+			<aside>
+				<div class="search">
+					<input type="text" id="search-users" placeholder="Find a chat buddy">
+					<div class="users">
+						<!-- Dynamically loaded -->
+					</div>
+				</div>
+				<div class="users" subtitle="Recent contacts">
+					<div class="loader"><div class="icon"></div></div>
+					<!-- Dynamically loaded -->
+				</div>
+			</aside>
+	
+			<conversation>
+				<div class="loader"><div class="icon"></div></div>
+				<div class="info">
+					<div class="user">
+						<div class="avatar"><img src="/assets/logo/logo.svg" alt=""></div>
+						<div class="username">Start a conversation</div>
+					</div>
+				</div>
+				<messages>
+					<message sender-username="Chatter" sent="false">Hey</message>
+					<message sender-username="Me" sent="true">Hello</message>
+				</messages>
+				<chat-send>
+					<input type="text" id="message" placeholder="Message">
+					<button id="send" color="blue">send</button>
+				</chat-send>
+			</conversation>
+		</chat>
+	</main>
+  <script src="/js/main.js"></script>
+</body>
+</html>
