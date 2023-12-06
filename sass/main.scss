@@ -94,8 +94,17 @@ main {
 
 	.logo {
 		@include display-flex(row, center, center);
-		width: 5rem;
+
+		width: 7rem;
+		padding: 1rem;
+		border-radius: 0.5rem;
 		aspect-ratio: 1;
+		background-color: transparent;
+		transition: background-color 0.2 ease-out;
+
+		&:hover {
+			background-color: rgba($color-white, 0.05);
+		}
 
 		img {
 			width: 100%;
