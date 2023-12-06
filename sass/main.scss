@@ -1,4 +1,6 @@
 
+@import "_fonts.scss";
+
 /* COLOR PALETTE */
 $color-white:				#EEEEEE;
 $color-black:				#222222;
@@ -7,7 +9,7 @@ $color-green:				#00CC3D;
 
 :root {
 	font-size: 20px;
-	font-family: "Arial", sans-serif;
+	font-family: "JetBrains Mono", monospace;
 }
 
 @mixin display-flex($direction: row, $justfiy: flex-start, $align: flex-start, $gap: 1rem) {
@@ -82,13 +84,18 @@ main {
 		@include display-flex(column, flex-start, center, 1rem);
 		
 		width: 25rem;
-		padding: 1rem;
+		padding: 2rem;
 		background-color: rgba($color-white, 0.1);
 		border-radius: 0.5rem;
 
 		input {
 			width: 100%;
 			text-align: center;
+		}
+
+		button {
+			width: 40%;
+			margin-top: 1rem;
 		}
 	}
 }
