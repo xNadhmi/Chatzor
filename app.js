@@ -215,6 +215,31 @@ app.post("/settings/avatar", async (req, res) => {
 	}
 });
 
+app.post("/settings/delete", async (req, res) => {
+	const { password } = req.body;
+	const user = req.session.user;
+
+	try {
+		const passwordMatch = await bcrypt.compare(password, user.password);
+
+		if (!passwordMatch) {
+			res.redirect("/settings?error=Invalid password for account deletion");
+			return;
+		}
+
+		const dbQuery = "DELETE FROM users WHERE id = ?";
+		await pool.query(dbQuery, [user.id]);
+
+		req.session.destroy(() => {
+			res.redirect("/login?success=Account permanently deleted successfully");
+		});
+	} catch (error) {
+		console.error("Error deleting account:", error);
+		// Redirect to settings page with an error message
+		res.redirect("/settings?error=Internal server error");
+	}
+});
+
 
 app.get("/get-contacts", requireLogin, async (req, res) => {
 	try {
