@@ -90,7 +90,7 @@ chat {
 				cursor: pointer;
 				transition: background-color 0.2s;
 
-				&:hover {
+				&:hover, &[selected="true"] {
 					background-color: rgba($color-white, 0.07);
 				}
 
@@ -102,6 +102,10 @@ chat {
 					background-color: $color-blue;
 				}
 				&[new-message="true"]::after {content: "";}
+
+				&[selected="true"] {
+					outline: 2px solid rgba($color-white, 0.2);
+				}
 				
 				.avatar {
 					@include display-flex(row, flex-start, center, 0);

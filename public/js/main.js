@@ -157,8 +157,14 @@ chat.conversation.getHistory = async (targetID) => {
 
 
 chat.conversation.setTarget = async (user) => {
+chat.conversation.setTarget = async (user, clickedDiv) => {
 	chat.conversation.loader.removeAttribute("loaded");
+
 	if (user?.id && chat.conversation.ws.readyState === WebSocket.OPEN) {
+		let selectedDiv = document.querySelector("aside > .users .user[selected='true']");
+		if (selectedDiv) selectedDiv.removeAttribute("selected");
+		if (clickedDiv) clickedDiv.setAttribute("selected", true);
+
 		let div_user = chat.conversation.info.elem.querySelector(".user");
 		let user_img = div_user.querySelector(".avatar img");
 		let user_username = div_user.querySelector(".username");
