@@ -4,7 +4,7 @@
 <img src="public/assets/logo/logo.svg" alt="Chatzor Logo" width="200" height="200">
 </p>
 
-Chatzor is a simple web chat application built with Node.js, Express, and WebSocket for real-time communication. Users can register, log in, and exchange messages with other users in real-time.
+Chatzor is a simple web chat application built with `Node.js`, `Express`, and `WebSocket` for real-time communication. Users can register, log in, and exchange messages with other users in real-time.
 
 ## Demo
 
