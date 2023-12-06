@@ -33,6 +33,16 @@
 				<button type="submit" id="save" button-style="slide">Save</button>
 			</form>
 		</details>
+
+		<details>
+			<summary>Delete account</summary>
+
+			<form action="settings/delete" method="post">
+				<p>Deleting your account will <u>permanently</u> remove it and will never be restored</p>
+				<input type="password" name="password" id="password" placeholder="Enter your password" required>
+				<button type="submit" id="delete" button-style="slide" style="color: red">DELETE</button>
+			</form>
+		</details>
 	</main>
 
 	<script>

@@ -129,7 +129,7 @@ chat.aside.users.updateContacts = async () => {
 			<div class="username">${user.username}</div>
 		`;
 
-		div.addEventListener("click", () => {chat.conversation.setTarget(user); div.removeAttribute("new-message");});
+		div.addEventListener("click", () => {chat.conversation.setTarget(user, div); div.removeAttribute("new-message");});
 
 		chat.aside.users.elem.appendChild(div);
 		chat.aside.users.contacts.push({id: user.id, username: user.username, elem: div});
@@ -156,9 +156,14 @@ chat.conversation.getHistory = async (targetID) => {
 };
 
 
-chat.conversation.setTarget = async (user) => {
+chat.conversation.setTarget = async (user, clickedDiv) => {
 	chat.conversation.loader.removeAttribute("loaded");
+
 	if (user?.id && chat.conversation.ws.readyState === WebSocket.OPEN) {
+		let selectedDiv = document.querySelector("aside > .users .user[selected='true']");
+		if (selectedDiv) selectedDiv.removeAttribute("selected");
+		if (clickedDiv) clickedDiv.setAttribute("selected", true);
+
 		let div_user = chat.conversation.info.elem.querySelector(".user");
 		let user_img = div_user.querySelector(".avatar img");
 		let user_username = div_user.querySelector(".username");
@@ -196,13 +201,15 @@ chat.conversation.setTarget = async (user) => {
 
 
 		chat.conversation.loader.setAttribute("loaded", "");
+		chat.conversation.loader.removeAttribute("message");
 	}
 };
 
-chat.conversation.init = () => {
+chat.conversation.init = (useInsecure) => {
   // Open a WebSocket connection for the conversation
-	// chat.conversation.ws = new WebSocket("ws://" + location.host + "/");					// USE FOR LOCAL SERVER
-	chat.conversation.ws = new WebSocket("wss://" + location.host + "/");
+	if (useInsecure) chat.conversation.ws = new WebSocket("ws://" + location.host + "/");
+	else chat.conversation.ws = new WebSocket("wss://" + location.host + "/");
+	
 	
 	chat.conversation.ws.addEventListener("open", () => {
 		console.log("[WebSocket] Connection opened");
@@ -268,6 +275,9 @@ chat.conversation.init = () => {
 
 	chat.conversation.ws.addEventListener("error", (event) => {
 		console.error("[WebSocket] Connection error:", event);
+
+		console.log("[WebSocket] Attempting to use insecure Web Socket instead");
+		chat.conversation.init(true)					// USE FOR LOCAL SERVER
 	});
 };
 chat.conversation.init();

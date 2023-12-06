@@ -135,7 +135,7 @@ app.post("/register", async (req, res) => {
 
 	if (!username || username.length < 2) {res.redirect("/register?error=Enter a valid username (min. 2 characters)"); return}
 	if (!email || !(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).test(email)) {res.redirect("/register?error=Enter a valid email address"); return}
-	if (!password || password.length < 3) {res.redirect("/register?error=Password had to be alteast 3 characters long"); return}
+	if (!password || password.length < 3) {res.redirect("/register?error=Password has to be alteast 3 characters long"); return}
 	if (password !== confirmPassword) {res.redirect("/register?error=The two passwords do not match"); return}
 
 	try {
@@ -176,6 +176,8 @@ app.post("/settings/password", async (req, res) => {
 			return;
 		}
 
+		if (newPassword.length < 3) {res.redirect("/register?error=Password has to be alteast 3 characters long"); return}
+
 		if (newPassword !== confirmPassword) {
 			res.redirect("/settings?error=New password and confirm password do not match");
 			return;
@@ -210,6 +212,31 @@ app.post("/settings/avatar", async (req, res) => {
 	} catch (error) {
 		console.error("Error updating avatar:", error);
 		res.redirect("/settings?error=Error updating avatar");
+	}
+});
+
+app.post("/settings/delete", async (req, res) => {
+	const { password } = req.body;
+	const user = req.session.user;
+
+	try {
+		const passwordMatch = await bcrypt.compare(password, user.password);
+
+		if (!passwordMatch) {
+			res.redirect("/settings?error=Invalid password for account deletion");
+			return;
+		}
+
+		const dbQuery = "DELETE FROM users WHERE id = ?";
+		await pool.query(dbQuery, [user.id]);
+
+		req.session.destroy(() => {
+			res.redirect("/login?success=Account permanently deleted successfully");
+		});
+	} catch (error) {
+		console.error("Error deleting account:", error);
+		// Redirect to settings page with an error message
+		res.redirect("/settings?error=Internal server error");
 	}
 });
 
