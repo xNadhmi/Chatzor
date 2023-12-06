@@ -145,7 +145,7 @@ main form {
   justify-content: flex-start;
   align-items: center;
   gap: 1rem;
-  width: 25rem;
+  width: min(25rem, 100%);
   padding: 2rem;
   background-color: rgba(238, 238, 238, 0.1);
   border-radius: 0.5rem;
@@ -164,7 +164,7 @@ main details {
   justify-content: flex-start;
   align-items: center;
   gap: 1rem;
-  width: 30rem;
+  width: min(30rem, 100%);
   border-radius: 0.5rem;
   background-color: rgba(238, 238, 238, 0.1);
 }
@@ -183,6 +183,13 @@ main details form label {
   opacity: 0.5;
 }
 
+/* RESPONSIVE VERSION */
+/* Styles for tablet */
+@media (width < 750px), (height < 700px) {
+  :root {
+    font-size: 12px;
+  }
+}
 chat {
   display: flex;
   flex-direction: row;
@@ -499,6 +506,21 @@ chat conversation chat-send input {
   width: 100%;
 }
 
+/* RESPONSIVE VERSION */
+/* Styles for tablet */
+@media (width < 750px), (height < 700px) {
+  :root {
+    font-size: 15px;
+  }
+  chat {
+    flex-direction: column;
+    width: 100%;
+  }
+  chat aside {
+    width: 100%;
+    height: 50%;
+  }
+}
 input {
   display: flex;
   flex-direction: row;

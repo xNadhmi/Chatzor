@@ -310,3 +310,23 @@ chat {
 		}
 	}
 }
+
+
+/* RESPONSIVE VERSION */
+
+/* Styles for tablet */
+@media (width < 750px), (height < 700px) {
+	:root {
+		font-size: 15px;
+	}
+	
+	chat {
+		flex-direction: column;
+		width: 100%;
+
+		aside {
+			width: 100%;
+			height: 50%;
+		}
+	}
+}
