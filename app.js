@@ -26,19 +26,18 @@ const wss = new WebSocket.Server({ server });
 const onlineUsers = new Set();
 
 
-const dbCredentials = JSON.parse(fs.readFileSync("db.json", "utf-8"));
-
+const dbCredentials = fs.existsSync("db.json") ? JSON.parse(fs.readFileSync("db.json", "utf-8")) : {};
 const dbConfig = dbCredentials.dbConfig
 
 let pool;
 
 function dbConnect() {
 	pool = mysql.createPool({
-		host: process.env.DB_HOST || dbConfig.host,
-		port: process.env.DB_PORT || dbConfig.port,
-		database: process.env.DB_NAME || dbConfig.database,
-		user: process.env.DB_USER || dbConfig.user,
-		password: process.env.DB_PASSWORD || dbConfig.password
+		host: process.env.DB_HOST || dbConfig?.host,
+		port: process.env.DB_PORT || dbConfig?.port,
+		database: process.env.DB_NAME || dbConfig?.database,
+		user: process.env.DB_USER || dbConfig?.user,
+		password: process.env.DB_PASSWORD || dbConfig?.password
 	});
 
 	// Promisify the query method
