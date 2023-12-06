@@ -129,7 +129,7 @@ chat.aside.users.updateContacts = async () => {
 			<div class="username">${user.username}</div>
 		`;
 
-		div.addEventListener("click", () => {chat.conversation.setTarget(user); div.removeAttribute("new-message");});
+		div.addEventListener("click", () => {chat.conversation.setTarget(user, div); div.removeAttribute("new-message");});
 
 		chat.aside.users.elem.appendChild(div);
 		chat.aside.users.contacts.push({id: user.id, username: user.username, elem: div});
@@ -156,7 +156,6 @@ chat.conversation.getHistory = async (targetID) => {
 };
 
 
-chat.conversation.setTarget = async (user) => {
 chat.conversation.setTarget = async (user, clickedDiv) => {
 	chat.conversation.loader.removeAttribute("loaded");
 
@@ -202,6 +201,7 @@ chat.conversation.setTarget = async (user, clickedDiv) => {
 
 
 		chat.conversation.loader.setAttribute("loaded", "");
+		chat.conversation.loader.removeAttribute("message");
 	}
 };
 
