@@ -1,0 +1,10 @@
+
+{
+	"dbConfig": {
+		"host": "srv1123.hstgr.io",
+		"port": "3306",
+		"database": "u549231978_hetic_g_04",
+		"user": "u549231978_hetic_g_04",
+		"password": "Hetic2023$"
+	}
+}

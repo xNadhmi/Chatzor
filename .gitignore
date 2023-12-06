@@ -2,7 +2,7 @@
 node_modules
 
 # contains database credentials
-db.json
+# db.json
 
 # ignore css files
 # *.css
