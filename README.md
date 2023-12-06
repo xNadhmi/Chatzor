@@ -6,6 +6,13 @@
 
 Chatzor is a simple web chat application built with Node.js, Express, and WebSocket for real-time communication. Users can register, log in, and exchange messages with other users in real-time.
 
+## Demo
+
+You can check out a live demo of Chatzor at [https://chatzor.onrender.com/](https://chatzor.onrender.com/).
+
+Feel free to explore the features and experience real-time chatting!
+
+
 ## Getting Started
 
 To run Chatzor locally, follow these steps:
