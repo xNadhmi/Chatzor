@@ -189,11 +189,10 @@ chat.conversation.setTarget = async (user) => {
 			div.setAttribute("timestamp", message.time);
 			div.textContent = message.content;
 			chat.conversation.messages.elem.appendChild(div);
-
-			div.scrollIntoView();
 		});
 		
 		if (previousMessages.length > 0 ) chat.conversation.messages.elem.innerHTML += `<div class="indicator">Today</div>`;
+		chat.conversation.messages.elem.lastChild.scrollIntoView();
 
 
 		chat.conversation.loader.setAttribute("loaded", "");
@@ -206,7 +205,7 @@ chat.conversation.init = () => {
 	chat.conversation.ws = new WebSocket("wss://" + location.host + "/");
 	
 	chat.conversation.ws.addEventListener("open", () => {
-		console.log("WebSocket connection opened");
+		console.log("[WebSocket] Connection opened");
 	
 		// Handle incoming messages from the WebSocket server
 		chat.conversation.ws.addEventListener("message", (event) => {
