@@ -99,7 +99,6 @@ app.post("/login", async (req, res) => {
 		const getUserQuery = "SELECT * FROM users WHERE email = ?";
 		const userResults = await pool.query(getUserQuery, [email]);
 
-		if (userResults.length === 1) {
 		if (userResults.length === 0) {
 			res.redirect("/login?error=Email does not belong to any registered user");
 
