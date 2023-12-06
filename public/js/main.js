@@ -178,7 +178,10 @@ chat.conversation.setTarget = async (user) => {
 			message.date = new Intl.DateTimeFormat("fr-FR", {year: "numeric", month: "2-digit", day: "2-digit", timeZone: clientTimezone,}).format(utcTimestamp);
 			message.time = new Intl.DateTimeFormat("fr-FR", {hour: "2-digit", minute: "2-digit", second: "2-digit", timeZone: clientTimezone,}).format(utcTimestamp);
 
-			if (previousDate !== message.date) chat.conversation.messages.elem.innerHTML += `<div class='indicator date'>${message.date}</div>`;
+			if (previousDate !== message.date) {
+				chat.conversation.messages.elem.innerHTML += `<div class='indicator date'>${message.date}</div>`;
+				previousDate = message.date;
+			}
 
 			let div = document.createElement("message");
 			div.setAttribute("sent", message.sent);
@@ -187,6 +190,7 @@ chat.conversation.setTarget = async (user) => {
 			div.textContent = message.content;
 			chat.conversation.messages.elem.appendChild(div);
 
+			div.scrollIntoView();
 		});
 		
 		if (previousMessages.length > 0 ) chat.conversation.messages.elem.innerHTML += `<div class="indicator">Today</div>`;
@@ -198,7 +202,8 @@ chat.conversation.setTarget = async (user) => {
 
 chat.conversation.init = () => {
   // Open a WebSocket connection for the conversation
-	chat.conversation.ws = new WebSocket("wss://" + location.host + "/");
+	chat.conversation.ws = new WebSocket("ws://" + location.host + "/");					// USE FOR LOCAL SERVER
+	// chat.conversation.ws = new WebSocket("wss://" + location.host + "/");
 	
 	chat.conversation.ws.addEventListener("open", () => {
 		console.log("WebSocket connection opened");
