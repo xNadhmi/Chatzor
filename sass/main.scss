@@ -121,6 +121,32 @@ main {
 			margin-top: 1rem;
 		}
 	}
+	
+
+	details {
+		@include display-flex(column, flex-start, center, 1rem);
+	
+		width: 30rem;
+		border-radius: 0.5rem;
+		background-color: rgba($color-white, 0.1);
+
+		summary {
+			padding: 1rem;
+			cursor: pointer;
+		}
+
+		form {
+			width: 100%;
+			background-color: transparent;
+
+			label {
+				width: 100%;
+				font-size: 0.7;
+				font-style: italic;
+				opacity: 0.5;
+			}
+		}
+	}
 }
 
 
