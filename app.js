@@ -135,7 +135,7 @@ app.post("/register", async (req, res) => {
 
 	if (!username || username.length < 2) {res.redirect("/register?error=Enter a valid username (min. 2 characters)"); return}
 	if (!email || !(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).test(email)) {res.redirect("/register?error=Enter a valid email address"); return}
-	if (!password || password.length < 3) {res.redirect("/register?error=Password had to be alteast 3 characters long"); return}
+	if (!password || password.length < 3) {res.redirect("/register?error=Password has to be alteast 3 characters long"); return}
 	if (password !== confirmPassword) {res.redirect("/register?error=The two passwords do not match"); return}
 
 	try {
@@ -175,6 +175,8 @@ app.post("/settings/password", async (req, res) => {
 			res.redirect("/settings?error=Invalid old password");
 			return;
 		}
+
+		if (newPassword.length < 3) {res.redirect("/register?error=Password has to be alteast 3 characters long"); return}
 
 		if (newPassword !== confirmPassword) {
 			res.redirect("/settings?error=New password and confirm password do not match");
