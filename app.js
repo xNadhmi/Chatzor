@@ -158,6 +158,62 @@ app.post("/register", async (req, res) => {
 });
 
 
+
+app.get("/settings", (req, res, next) => {if (!req.session.loggedIn) res.redirect("/login"); else next()}, (req, res) => {
+	res.render("settings");
+});
+
+// Handling form submission
+app.post("/settings/password", async (req, res) => {
+	const { oldPassword, newPassword, confirmPassword } = req.body;
+	const user = req.session.user;
+
+	try {
+		const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+
+		if (!passwordMatch) {
+			res.redirect("/settings?error=Invalid old password");
+			return;
+		}
+
+		if (newPassword !== confirmPassword) {
+			res.redirect("/settings?error=New password and confirm password do not match");
+			return;
+		}
+
+		const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+		const dbQuery = "UPDATE users SET password = ? WHERE id = ?";
+		await pool.query(dbQuery, [hashedNewPassword, user.id]);
+
+		res.redirect("/settings?success=Password updated successfully");
+	} catch (error) {
+		console.error("Error updating password:", error);
+		res.redirect("/settings?error=Internal server error");
+	}
+});
+// Handling form submission
+app.post("/settings/avatar", async (req, res) => {
+	const { avatar } = req.body;
+
+	if (!(/\.(jpg|jpeg|png|gif|bmp|svg|webp)$/i).test(avatar)) {
+		res.redirect("/settings?error=Please provide a valid image URL");
+		return;
+	}
+
+	try {
+		let user = req.session.user;
+		const dbQuery = "UPDATE users SET avatar = ? WHERE id = ?";
+		await pool.query(dbQuery, [avatar, user.id]);
+
+		res.redirect("/settings?success=Avatar updated successfully");
+	} catch (error) {
+		console.error("Error updating avatar:", error);
+		res.redirect("/settings?error=Error updating avatar");
+	}
+});
+
+
 app.get("/get-contacts", requireLogin, async (req, res) => {
 	try {
 		let user = req.session.user;
