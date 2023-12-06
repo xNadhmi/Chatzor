@@ -69,6 +69,29 @@ main {
 	height: 100%;
 	padding: 1rem;
 
+	.handle-status {
+		@include display-flex(row, center, center, 0.5rem);
+
+		font-size: 0.7em;
+
+		&::before {
+			padding: 0.2rem 0.5rem;
+			font-weight: 700;
+			background-color: $color-green;
+			border-radius: 0.25rem;
+			text-transform: uppercase;
+		}
+
+		&[type="success"]::before {
+			content: "";
+			background-color: $color-green;
+		}
+		&[type="error"]::before {
+			content: "";
+			background-color: $color-red;
+		}
+	}
+
 	.logo {
 		@include display-flex(row, center, center);
 		width: 5rem;

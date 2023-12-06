@@ -100,6 +100,10 @@ app.post("/login", async (req, res) => {
 		const userResults = await pool.query(getUserQuery, [email]);
 
 		if (userResults.length === 1) {
+		if (userResults.length === 0) {
+			res.redirect("/login?error=Email does not belong to any registered user");
+
+		} else if (userResults.length === 1) {
 			const user = userResults[0];
 
 			// Compare the provided password with the hashed password in the database
@@ -108,20 +112,18 @@ app.post("/login", async (req, res) => {
 			if (passwordMatch) {
 				req.session.loggedIn = true;
 
-				delete user.password;
 				req.session.user = user;
 				gCurrentUser = req.session.user;
 
 				res.redirect("/");
 				return;
+			} else {
+				res.redirect("/login?error=Invalid password");
 			}
 		}
-
-		// Either the user does not exist or the password is incorrect
-		res.redirect("/login");
 	} catch (error) {
 		console.error("Error during login:", error);
-		res.redirect("/login");
+		res.redirect("/login?error=Internal server error");
 	}
 });
 
@@ -132,37 +134,27 @@ app.get("/register", (req, res, next) => {if (req.session.loggedIn) res.redirect
 app.post("/register", async (req, res) => {
 	const { username, email, password, confirmPassword } = req.body;
 
-	// Basic validation
-	if (
-		!username || !email || !password || password !== confirmPassword
-		|| username.length < 2 || email.length < 3 || password.length < 2
-	) {
-		res.redirect("/register");
-		return;
-	}
+	if (!username || username.length < 2) {res.redirect("/register?error=Enter a valid username (min. 2 characters)"); return}
+	if (!email || !(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).test(email)) {res.redirect("/register?error=Enter a valid email address"); return}
+	if (!password || password.length < 3) {res.redirect("/register?error=Password had to be alteast 3 characters long"); return}
+	if (password !== confirmPassword) {res.redirect("/register?error=The two passwords do not match"); return}
 
 	try {
-		// Hash and salt the password using bcrypt
 		const hashedPassword = await bcrypt.hash(password, 10);
 
-		// Check if the username or email already exists in the database
 		const userExistsQuery = "SELECT * FROM users WHERE username = ? OR email = ?";
 		const userExistsResults = await pool.query(userExistsQuery, [username, email]);
 
-		if (userExistsResults.length > 0) {
-			// User with the same username or email already exists
-			res.redirect("/register");
-			return;
-		}
+		if (userExistsResults.length > 0) {res.redirect("/register?error=A user with matching username or email already exists"); return}
 
 		// Insert the new user into the database with the hashed password
 		const insertUserQuery = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
 		await pool.query(insertUserQuery, [username, email, hashedPassword]);
 
-		res.redirect("/login");
+		res.redirect("/login?success=Account successfully created. You may log in");
 	} catch (error) {
 		console.error("Error registering user:", error);
-		res.redirect("/register");
+		res.redirect("/register?error=Internal server error");
 	}
 });
 
