@@ -202,8 +202,8 @@ chat.conversation.setTarget = async (user) => {
 
 chat.conversation.init = () => {
   // Open a WebSocket connection for the conversation
-	chat.conversation.ws = new WebSocket("ws://" + location.host + "/");					// USE FOR LOCAL SERVER
-	// chat.conversation.ws = new WebSocket("wss://" + location.host + "/");
+	// chat.conversation.ws = new WebSocket("ws://" + location.host + "/");					// USE FOR LOCAL SERVER
+	chat.conversation.ws = new WebSocket("wss://" + location.host + "/");
 	
 	chat.conversation.ws.addEventListener("open", () => {
 		console.log("WebSocket connection opened");
