@@ -215,6 +215,9 @@ chat .loader[loaded] {
   opacity: 0;
   pointer-events: none;
 }
+chat .loader::before {
+  content: attr(message);
+}
 chat .loader .icon {
   background-image: url("../assets/spinner.svg");
   background-repeat: no-repeat;
@@ -280,7 +283,7 @@ chat aside .users .user {
   cursor: pointer;
   transition: background-color 0.2s;
 }
-chat aside .users .user:hover {
+chat aside .users .user:hover, chat aside .users .user[selected=true] {
   background-color: rgba(238, 238, 238, 0.07);
 }
 chat aside .users .user::after {
@@ -292,6 +295,9 @@ chat aside .users .user::after {
 }
 chat aside .users .user[new-message=true]::after {
   content: "";
+}
+chat aside .users .user[selected=true] {
+  outline: 2px solid rgba(238, 238, 238, 0.2);
 }
 chat aside .users .user .avatar {
   display: flex;
@@ -310,7 +316,7 @@ chat aside .users .user .avatar:has(img[src="assets/logo/logo.svg"]), chat aside
 chat aside .users .user .avatar img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 chat aside .users .user .username {
   display: flex;
@@ -330,6 +336,9 @@ chat aside .users .user .username::after {
 }
 chat aside .users .user[online=true] .username::after {
   opacity: 1;
+}
+chat aside > .users:has(:not(.user))::before {
+  content: "No recent contacts";
 }
 chat conversation {
   display: flex;
@@ -395,7 +404,7 @@ chat conversation .info .user .avatar:has(img[src="assets/logo/logo.svg"]), chat
 chat conversation .info .user .avatar img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 chat conversation messages {
   display: flex;
