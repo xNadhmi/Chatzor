@@ -227,8 +227,24 @@ app.post("/settings/delete", async (req, res) => {
 			return;
 		}
 
-		const dbQuery = "DELETE FROM users WHERE id = ?";
-		await pool.query(dbQuery, [user.id]);
+		await pool.query("START TRANSACTION");
+
+		try {
+			// Delete messages sent or received by the user
+			const deleteMessagesQuery = "DELETE FROM messages WHERE source = ? OR target = ?";
+			await pool.query(deleteMessagesQuery, [user.id, user.id]);
+
+			// Delete the user's account from the database
+			const deleteUserQuery = "DELETE FROM users WHERE id = ?";
+			await pool.query(deleteUserQuery, [user.id]);
+
+			// Commit the transaction
+			await pool.query("COMMIT");
+		} catch (error) {
+			// Rollback the transaction in case of an error
+			await pool.query("ROLLBACK");
+			throw error;
+		}
 
 		req.session.destroy(() => {
 			res.redirect("/login?success=Account permanently deleted successfully");
