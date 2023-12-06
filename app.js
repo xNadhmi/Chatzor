@@ -99,7 +99,10 @@ app.post("/login", async (req, res) => {
 		const getUserQuery = "SELECT * FROM users WHERE email = ?";
 		const userResults = await pool.query(getUserQuery, [email]);
 
-		if (userResults.length === 1) {
+		if (userResults.length === 0) {
+			res.redirect("/login?error=Email does not belong to any registered user");
+
+		} else if (userResults.length === 1) {
 			const user = userResults[0];
 
 			// Compare the provided password with the hashed password in the database
@@ -108,20 +111,18 @@ app.post("/login", async (req, res) => {
 			if (passwordMatch) {
 				req.session.loggedIn = true;
 
-				delete user.password;
 				req.session.user = user;
 				gCurrentUser = req.session.user;
 
 				res.redirect("/");
 				return;
+			} else {
+				res.redirect("/login?error=Invalid password");
 			}
 		}
-
-		// Either the user does not exist or the password is incorrect
-		res.redirect("/login");
 	} catch (error) {
 		console.error("Error during login:", error);
-		res.redirect("/login");
+		res.redirect("/login?error=Internal server error");
 	}
 });
 
@@ -132,37 +133,83 @@ app.get("/register", (req, res, next) => {if (req.session.loggedIn) res.redirect
 app.post("/register", async (req, res) => {
 	const { username, email, password, confirmPassword } = req.body;
 
-	// Basic validation
-	if (
-		!username || !email || !password || password !== confirmPassword
-		|| username.length < 2 || email.length < 3 || password.length < 2
-	) {
-		res.redirect("/register");
-		return;
-	}
+	if (!username || username.length < 2) {res.redirect("/register?error=Enter a valid username (min. 2 characters)"); return}
+	if (!email || !(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).test(email)) {res.redirect("/register?error=Enter a valid email address"); return}
+	if (!password || password.length < 3) {res.redirect("/register?error=Password had to be alteast 3 characters long"); return}
+	if (password !== confirmPassword) {res.redirect("/register?error=The two passwords do not match"); return}
 
 	try {
-		// Hash and salt the password using bcrypt
 		const hashedPassword = await bcrypt.hash(password, 10);
 
-		// Check if the username or email already exists in the database
 		const userExistsQuery = "SELECT * FROM users WHERE username = ? OR email = ?";
 		const userExistsResults = await pool.query(userExistsQuery, [username, email]);
 
-		if (userExistsResults.length > 0) {
-			// User with the same username or email already exists
-			res.redirect("/register");
-			return;
-		}
+		if (userExistsResults.length > 0) {res.redirect("/register?error=A user with matching username or email already exists"); return}
 
 		// Insert the new user into the database with the hashed password
 		const insertUserQuery = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
 		await pool.query(insertUserQuery, [username, email, hashedPassword]);
 
-		res.redirect("/login");
+		res.redirect("/login?success=Account successfully created. You may log in");
 	} catch (error) {
 		console.error("Error registering user:", error);
-		res.redirect("/register");
+		res.redirect("/register?error=Internal server error");
+	}
+});
+
+
+
+app.get("/settings", (req, res, next) => {if (!req.session.loggedIn) res.redirect("/login"); else next()}, (req, res) => {
+	res.render("settings");
+});
+
+// Handling form submission
+app.post("/settings/password", async (req, res) => {
+	const { oldPassword, newPassword, confirmPassword } = req.body;
+	const user = req.session.user;
+
+	try {
+		const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+
+		if (!passwordMatch) {
+			res.redirect("/settings?error=Invalid old password");
+			return;
+		}
+
+		if (newPassword !== confirmPassword) {
+			res.redirect("/settings?error=New password and confirm password do not match");
+			return;
+		}
+
+		const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+		const dbQuery = "UPDATE users SET password = ? WHERE id = ?";
+		await pool.query(dbQuery, [hashedNewPassword, user.id]);
+
+		res.redirect("/settings?success=Password updated successfully");
+	} catch (error) {
+		console.error("Error updating password:", error);
+		res.redirect("/settings?error=Internal server error");
+	}
+});
+// Handling form submission
+app.post("/settings/avatar", async (req, res) => {
+	const { avatar } = req.body;
+
+	if (!(/\.(jpg|jpeg|png|gif|bmp|svg|webp)$/i).test(avatar)) {
+		res.redirect("/settings?error=Please provide a valid image URL");
+		return;
+	}
+
+	try {
+		let user = req.session.user;
+		const dbQuery = "UPDATE users SET avatar = ? WHERE id = ?";
+		await pool.query(dbQuery, [avatar, user.id]);
+
+		res.redirect("/settings?success=Avatar updated successfully");
+	} catch (error) {
+		console.error("Error updating avatar:", error);
+		res.redirect("/settings?error=Error updating avatar");
 	}
 });
 
@@ -171,7 +218,7 @@ app.get("/get-contacts", requireLogin, async (req, res) => {
 	try {
 		let user = req.session.user;
 		let dbQuery = `
-			SELECT DISTINCT u.id, u.username
+			SELECT DISTINCT u.id, u.username, u.email, u.avatar
 			FROM users u
 			JOIN messages m ON u.id = m.source OR u.id = m.target
 			WHERE (m.source = ? OR m.target = ?) AND u.id != ?
@@ -193,7 +240,7 @@ app.get("/search-users", requireLogin, async (req, res) => {
 
 		// Fetch users that match the search query
 		const dbQuery = `
-			SELECT id, username
+			SELECT id, username, avatar
 			FROM users
 			WHERE username LIKE ? AND id != ?
 		`;

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="/assets/favicon/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="/css/main.css">
+  <title>Chatzor | Settings</title>
+</head>
+<body>
+	<main>
+		<a href="/" class="logo"><img src="assets/logo/logo.svg" alt="Chatzor logo"></a>
+		<h1>Settings</h1>
+		<div class="handle-status" type></div>
+		<details>
+			<summary>Update password</summary>
+
+			<form action="settings/password" method="post">
+				<input type="password" name="oldPassword" id="oldPassword" placeholder="Old password" required>
+				<input type="password" name="newPassword" id="newPassword" placeholder="New password" required>
+				<input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm password" required>
+				<button type="submit" id="save" button-style="slide">Save</button>
+			</form>
+		</details>
+
+		<details>
+			<summary>Update avatar</summary>
+
+			<form action="settings/avatar" method="post">
+				<label for="avatar">Enter a direct image url</label>
+				<input type="url" name="avatar" id="avatar" placeholder="Avatar URL" required>
+				<label for="avatar">(example: https://i.imgur.com/XMRWf3f.png)</label>
+				<button type="submit" id="save" button-style="slide">Save</button>
+			</form>
+		</details>
+	</main>
+
+	<script>
+    function displayStatus() {
+			const statusDiv = document.querySelector("main .handle-status");
+      const urlParams = new URLSearchParams(window.location.search);
+      const success = urlParams.get("success");
+      const error = urlParams.get("error");
+
+      if (success) {statusDiv.setAttribute("type", "success"); statusDiv.textContent = success;}
+      if (error) {statusDiv.setAttribute("type", "error"); statusDiv.textContent = error;}
+    }
+    window.onload = displayStatus;
+	</script>
+</body>
+</html>

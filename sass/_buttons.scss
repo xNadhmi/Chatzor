@@ -13,7 +13,7 @@ button {
 	cursor: pointer;
 	transition: background-color 0.2s ease-out;
 
-	&:hover {
+	&:hover, &:focus {
 		background-color: rgba($main-color, 0.1);
 	}
 
@@ -34,7 +34,7 @@ button {
 			transition: height 0.2s ease-out, opacity 0.2s ease-out;
 		}
 
-		&:hover::before {
+		&:hover::before, &:focus::before {
 			height: 100%;
 			opacity: 1;
 		}

@@ -10,4 +10,9 @@ input {
 	border: none;
 	background-color: transparent;
 	outline: 2px solid rgba($main-color, 0.2);
+	transition: background-color 0.2s ease-out;
+
+	&:focus {
+		background-color: rgba($main-color, 0.03);
+	}
 }

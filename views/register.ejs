@@ -9,10 +9,11 @@
 </head>
 <body>
 	<main>
-		<div class="logo"><img src="assets/logo/logo.svg" alt="Chatzor logo"></div>
+		<a href="/" class="logo"><img src="assets/logo/logo.svg" alt="Chatzor logo"></a>
 		<h1>Login to Chatzor</h1>
 		<h5>Already got an account? <a href="login">Login</a></h5>
 		<form action="register" method="post">
+			<div class="handle-status" type></div>
 			<input type="text" name="username" id="username" placeholder="Username" autocomplete="on" required>
 			<input type="email" name="email" id="email" placeholder="Email" autocomplete="on" required>
 			<input type="password" name="password" id="password" placeholder="Password" required>
@@ -20,5 +21,18 @@
 			<button type="submit" button-style="slide">Register</button>
 		</form>
 	</main>
+
+	<script>
+    function displayStatus() {
+			const statusDiv = document.querySelector("main .handle-status");
+      const urlParams = new URLSearchParams(window.location.search);
+      const success = urlParams.get("success");
+      const error = urlParams.get("error");
+
+      if (success) {statusDiv.setAttribute("type", "success"); statusDiv.textContent = success;}
+      if (error) {statusDiv.setAttribute("type", "error"); statusDiv.textContent = error;}
+    }
+    window.onload = displayStatus;
+	</script>
 </body>
 </html>

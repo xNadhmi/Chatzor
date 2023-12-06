@@ -5,6 +5,7 @@
 $color-white:				#EEEEEE;
 $color-black:				#222222;
 $color-blue:				#00A7B3;
+$color-red:					#CC0033;
 $color-green:				#00CC3D;
 
 :root {
@@ -69,10 +70,42 @@ main {
 	height: 100%;
 	padding: 1rem;
 
+	.handle-status {
+		@include display-flex(row, center, center, 0.5rem);
+
+		font-size: 0.7em;
+
+		&::before {
+			padding: 0.2rem 0.5rem;
+			font-weight: 700;
+			background-color: $color-green;
+			border-radius: 0.25rem;
+			text-transform: uppercase;
+		}
+
+		&[type="success"]::before {
+			content: "";
+			background-color: $color-green;
+		}
+		&[type="error"]::before {
+			content: "";
+			background-color: $color-red;
+		}
+	}
+
 	.logo {
 		@include display-flex(row, center, center);
-		width: 5rem;
+
+		width: 7rem;
+		padding: 1rem;
+		border-radius: 0.5rem;
 		aspect-ratio: 1;
+		background-color: transparent;
+		transition: background-color 0.2 ease-out;
+
+		&:hover {
+			background-color: rgba($color-white, 0.05);
+		}
 
 		img {
 			width: 100%;
@@ -96,6 +129,32 @@ main {
 		button {
 			width: 40%;
 			margin-top: 1rem;
+		}
+	}
+	
+
+	details {
+		@include display-flex(column, flex-start, center, 1rem);
+	
+		width: 30rem;
+		border-radius: 0.5rem;
+		background-color: rgba($color-white, 0.1);
+
+		summary {
+			padding: 1rem;
+			cursor: pointer;
+		}
+
+		form {
+			width: 100%;
+			background-color: transparent;
+
+			label {
+				width: 100%;
+				font-size: 0.7;
+				font-style: italic;
+				opacity: 0.5;
+			}
 		}
 	}
 }

@@ -60,7 +60,7 @@ npm install bcrypt mysql cors ejs express express-session ws sass
 
 ### 4. Compile Sass
 
-You will need to recompile Sass files, use:
+You may need to recompile Sass files, use:
 
 ```bash
 sass --watch sass:public/css
